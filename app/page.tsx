@@ -11,6 +11,7 @@ interface Todo {
 }
 
 export default function Home() {
+	// Properties
 	const [todos, setTodos] = useState<Todo[]>([
 		{ id: 1, title: "Dio Lupa", completed: false },
 		{ id: 2, title: "Ellie Beilish", completed: false },
@@ -18,10 +19,12 @@ export default function Home() {
 	]);
 	const [text, setText] = useState("");
 	const [error, setError] = useState(false);
+	// useRef - value change won't cause re-render
 	const idRef = useRef(
 		todos.length ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1
 	);
 
+	// Methods
 	const toggleComplete = (id: number) => {
 		setTodos((prev) =>
 			prev.map((todo) =>
@@ -50,6 +53,10 @@ export default function Home() {
 		}
 	};
 
+	const handleDelete = (id: number) => {
+		setTodos((prev) => prev.filter((todo) => todo.id !== id));
+	};
+
 	return (
 		<main>
 			{/* input */}
@@ -66,6 +73,7 @@ export default function Home() {
 							type="text"
 							className="input join-item grow"
 							placeholder="What do you want to do?"
+							value={text}
 							onChange={(e) => setText(e.target.value)}
 						/>
 						<button
@@ -100,7 +108,10 @@ export default function Home() {
 								/>
 								{todo.title}
 							</label>
-							<button className="btn btn-square btn-ghost">
+							<button
+								className="btn btn-square btn-ghost"
+								onClick={() => handleDelete(todo.id)}
+							>
 								<FontAwesomeIcon icon={faXmark} />
 							</button>
 						</li>

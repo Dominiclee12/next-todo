@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useState, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface Todo {
 	id: number;
@@ -51,7 +53,7 @@ export default function Home() {
 	return (
 		<main>
 			{/* input */}
-			<section className="flex flex-col items-center gap-4 container mx-auto p-4 my-4">
+			<section className="flex flex-col items-center gap-4 container mx-auto px-4 my-4">
 				<h1 className="text-3xl">Add a new task</h1>
 				<form className="w-full sm:w-3/4 md:w-2/5" onSubmit={handleSubmit}>
 					<div
@@ -77,7 +79,7 @@ export default function Home() {
 			</section>
 
 			{/* todo lists */}
-			<section className="flex flex-col items-center container mx-auto p-4 my-4">
+			<section className="flex flex-col items-center container mx-auto px-4 my-4">
 				<ul className="list rounded-box shadow-md w-full sm:w-3/4 md:w-2/5">
 					<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
 						#{todos.filter((todo) => !todo.completed).length} task(s) to be
@@ -86,7 +88,7 @@ export default function Home() {
 					{todos.map((todo) => (
 						<li className="list-row" key={todo.id}>
 							<label
-								className={`label ${
+								className={`label list-col-grow ${
 									todo.completed && "line-through opacity-25"
 								}`}
 							>
@@ -98,6 +100,9 @@ export default function Home() {
 								/>
 								{todo.title}
 							</label>
+							<button className="btn btn-square btn-ghost">
+								<FontAwesomeIcon icon={faXmark} />
+							</button>
 						</li>
 					))}
 				</ul>

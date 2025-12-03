@@ -60,9 +60,9 @@ export default function Home() {
 	return (
 		<main>
 			{/* input */}
-			<section className="flex flex-col items-center gap-4 container mx-auto px-4 my-4">
+			<section className="container mx-auto flex flex-col items-center gap-4 px-4 my-4">
 				<h1 className="text-3xl">Add a new task</h1>
-				<form className="w-full sm:w-3/4 md:w-2/5" onSubmit={handleSubmit}>
+				<form className="w-full sm:w-2/5" onSubmit={handleSubmit}>
 					<div
 						className={`join w-full ${
 							error && "tooltip tooltip-open tooltip-bottom"
@@ -76,10 +76,7 @@ export default function Home() {
 							value={text}
 							onChange={(e) => setText(e.target.value)}
 						/>
-						<button
-							type="submit"
-							className="btn btn-primary text-white join-item"
-						>
+						<button type="submit" className="btn btn-primary join-item">
 							Add
 						</button>
 					</div>
@@ -87,16 +84,16 @@ export default function Home() {
 			</section>
 
 			{/* todo lists */}
-			<section className="flex flex-col items-center container mx-auto px-4 my-4">
-				<ul className="list rounded-box shadow-md w-full sm:w-3/4 md:w-2/5">
+			<section className="container mx-auto px-4 my-4">
+				<ul className="w-full sm:w-2/5 mx-auto list rounded-box shadow-md">
 					<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
 						#{todos.filter((todo) => !todo.completed).length} task(s) to be
 						completed
 					</li>
 					{todos.map((todo) => (
-						<li className="list-row" key={todo.id}>
+						<li className="list-row items-center" key={todo.id}>
 							<label
-								className={`label list-col-grow ${
+								className={`label list-col-grow text-wrap ${
 									todo.completed && "line-through opacity-25"
 								}`}
 							>

@@ -27,7 +27,16 @@ export default function Home() {
 	}, []);
 
 	// Methods
-	const toggleComplete = (id: number) => {
+	const toggleComplete = async (id: number, completed: boolean) => {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ completed: !completed }),
+		});
+		const data = await res.json();
+
 		setTodos((prev) =>
 			prev.map((todo) =>
 				todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -48,6 +57,7 @@ export default function Home() {
 				body: JSON.stringify({ title: value }),
 			});
 			const data = await res.json();
+
 			setTodos([...todos, data]);
 			setText("");
 			setError(false);
@@ -105,7 +115,7 @@ export default function Home() {
 									type="checkbox"
 									className="checkbox"
 									checked={todo.completed}
-									onChange={() => toggleComplete(todo.id)}
+									onChange={() => toggleComplete(todo.id, todo.completed)}
 								/>
 								{todo.title}
 							</label>

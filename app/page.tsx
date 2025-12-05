@@ -67,7 +67,11 @@ export default function Home() {
 		}
 	};
 
-	const handleDelete = (id: number) => {
+	const handleDelete = async (id: number) => {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo/${id}`, {
+			method: "DELETE",
+		});
+
 		setTodos((prev) => prev.filter((todo) => todo.id !== id));
 	};
 

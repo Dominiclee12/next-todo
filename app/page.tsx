@@ -3,6 +3,12 @@
 import { FormEvent, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	createTodoAsync,
+	deleteTodoAsync,
+	getTodosAsync,
+	toggleCompleteAsync,
+} from "./services/api";
 
 interface Todo {
 	id: number;
@@ -19,8 +25,7 @@ export default function Home() {
 
 	useEffect(() => {
 		const fetchTodos = async () => {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo`);
-			const data = await res.json();
+			const data = await getTodosAsync();
 			setTodos(data);
 		};
 		fetchTodos();
@@ -28,14 +33,7 @@ export default function Home() {
 
 	// Methods
 	const toggleComplete = async (id: number, completed: boolean) => {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo/${id}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ completed: !completed }),
-		});
-		const data = await res.json();
+		const updatedTodo = await toggleCompleteAsync(id, completed);
 
 		setTodos((prev) =>
 			prev.map((todo) =>
@@ -49,16 +47,9 @@ export default function Home() {
 		const value = text.trim();
 
 		if (value.length) {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ title: value }),
-			});
-			const data = await res.json();
+			const newTodo = await createTodoAsync(value);
 
-			setTodos([...todos, data]);
+			setTodos([...todos, newTodo]);
 			setText("");
 			setError(false);
 		} else {
@@ -68,9 +59,7 @@ export default function Home() {
 	};
 
 	const handleDelete = async (id: number) => {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo/${id}`, {
-			method: "DELETE",
-		});
+		deleteTodoAsync(id);
 
 		setTodos((prev) => prev.filter((todo) => todo.id !== id));
 	};

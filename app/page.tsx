@@ -12,19 +12,10 @@ interface Todo {
 
 export default function Home() {
 	// Properties
-	// const [todos, setTodos] = useState<Todo[]>([
-	// 	{ id: 1, title: "Dio Lupa", completed: false },
-	// 	{ id: 2, title: "Ellie Beilish", completed: false },
-	// 	{ id: 3, title: "Sabrino Gardener", completed: true },
-	// ]);
 	const [todos, setTodos] = useState<Todo[]>([]);
 
 	const [text, setText] = useState("");
 	const [error, setError] = useState(false);
-	// useRef - value change won't cause re-render
-	// const idRef = useRef(
-	// 	todos.length ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1
-	// );
 
 	useEffect(() => {
 		const fetchTodos = async () => {
@@ -44,18 +35,20 @@ export default function Home() {
 		);
 	};
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault(); // prevent page refresh
 		const value = text.trim();
 
-		const newTodo: Todo = {
-			id: idRef.current++,
-			title: value,
-			completed: false,
-		};
-
 		if (value.length) {
-			setTodos([...todos, newTodo]);
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ title: value }),
+			});
+			const data = await res.json();
+			setTodos([...todos, data]);
 			setText("");
 			setError(false);
 		} else {

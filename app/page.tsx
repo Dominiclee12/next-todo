@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, useRef } from "react";
+import { FormEvent, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,17 +12,28 @@ interface Todo {
 
 export default function Home() {
 	// Properties
-	const [todos, setTodos] = useState<Todo[]>([
-		{ id: 1, title: "Dio Lupa", completed: false },
-		{ id: 2, title: "Ellie Beilish", completed: false },
-		{ id: 3, title: "Sabrino Gardener", completed: true },
-	]);
+	// const [todos, setTodos] = useState<Todo[]>([
+	// 	{ id: 1, title: "Dio Lupa", completed: false },
+	// 	{ id: 2, title: "Ellie Beilish", completed: false },
+	// 	{ id: 3, title: "Sabrino Gardener", completed: true },
+	// ]);
+	const [todos, setTodos] = useState<Todo[]>([]);
+
 	const [text, setText] = useState("");
 	const [error, setError] = useState(false);
 	// useRef - value change won't cause re-render
-	const idRef = useRef(
-		todos.length ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1
-	);
+	// const idRef = useRef(
+	// 	todos.length ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1
+	// );
+
+	useEffect(() => {
+		const fetchTodos = async () => {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Todo`);
+			const data = await res.json();
+			setTodos(data);
+		};
+		fetchTodos();
+	}, []);
 
 	// Methods
 	const toggleComplete = (id: number) => {

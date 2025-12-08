@@ -8,7 +8,7 @@ export async function getTodosAsync() {
 		},
 	});
 
-	return await res.json();
+	return res;
 }
 
 export async function createTodoAsync(title: string) {
@@ -22,7 +22,7 @@ export async function createTodoAsync(title: string) {
 		body: JSON.stringify({ title }),
 	});
 
-	return await res.json();
+	return res;
 }
 
 export async function toggleCompleteAsync(id: number, completed: boolean) {
@@ -36,7 +36,7 @@ export async function toggleCompleteAsync(id: number, completed: boolean) {
 		body: JSON.stringify({ completed: !completed }),
 	});
 
-	return await res.json();
+	return res;
 }
 
 export async function deleteTodoAsync(id: number) {
@@ -58,7 +58,7 @@ export async function loginAsync(email: string, password: string) {
 		body: JSON.stringify({ email, password }),
 	});
 
-	return await res.json();
+	return res;
 }
 
 export async function registerAsync(email: string, password: string) {
@@ -70,5 +70,5 @@ export async function registerAsync(email: string, password: string) {
 		body: JSON.stringify({ email, password }),
 	});
 
-	return await res.json();
+	return res;
 }

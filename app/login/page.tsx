@@ -9,17 +9,22 @@ export default function LoginPage() {
 	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState(false);
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		const res = await loginAsync(email, password);
-		const token = res.token;
-		console.log("Token: " + token);
 
-		if (token) {
+		if (res.ok) {
+			const data = await res.json();
+			const token = data.token;
+			setError(false);
 			sessionStorage.setItem("token", token);
 			router.push("/");
+		} else {
+			// falied to login
+			setError(true);
 		}
 	};
 
@@ -45,6 +50,11 @@ export default function LoginPage() {
 				/>
 
 				<button className="btn btn-neutral mt-4">Login</button>
+				{error && (
+					<div className="alert alert-error">
+						<span>Invalid email or password.</span>
+					</div>
+				)}
 				<p className="mt-2 text-center">
 					Don't have an account?{" "}
 					<Link className="link" href="/register">

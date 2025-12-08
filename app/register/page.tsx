@@ -2,24 +2,29 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { loginAsync, registerAsync } from "../services/api";
+import { registerAsync } from "../services/api";
 import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
 	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState(false);
 
 	const handleRegister = async (e: FormEvent) => {
 		e.preventDefault();
 
 		const res = await registerAsync(email, password);
 
-		if (res) {
-			const res = await loginAsync(email, password);
-			const token = res.token;
+		if (res.ok) {
+			const data = await res.json();
+			const token = data.token;
+			setError(false);
 			sessionStorage.setItem("token", token);
 			router.push("/");
+		} else {
+			// failed to register
+			setError(true);
 		}
 	};
 
@@ -45,6 +50,11 @@ const RegisterPage = () => {
 				/>
 
 				<button className="btn btn-neutral mt-4">Register</button>
+				{error && (
+					<div className="alert alert-error">
+						<span>Failed to register account.</span>
+					</div>
+				)}
 				<p className="mt-2 text-center">
 					Already have an account?{" "}
 					<Link className="link" href="/login">

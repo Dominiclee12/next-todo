@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -17,16 +18,28 @@ interface Todo {
 }
 
 export default function Home() {
+	const router = useRouter();
+
 	// Properties
 	const [todos, setTodos] = useState<Todo[]>([]);
-
 	const [text, setText] = useState("");
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
+		const token = sessionStorage.getItem("token");
+
+		if (!token) {
+			router.push("/login");
+			return;
+		}
+
 		const fetchTodos = async () => {
-			const data = await getTodosAsync();
-			setTodos(data);
+			const res = await getTodosAsync();
+
+			if (res.ok) {
+				const data = await res.json();
+				setTodos(data);
+			}
 		};
 		fetchTodos();
 	}, []);
@@ -47,11 +60,14 @@ export default function Home() {
 		const value = text.trim();
 
 		if (value.length) {
-			const newTodo = await createTodoAsync(value);
+			const res = await createTodoAsync(value);
 
-			setTodos([...todos, newTodo]);
-			setText("");
-			setError(false);
+			if (res.ok) {
+				const newTodo = await res.json();
+				setTodos([newTodo, ...todos]);
+				setText("");
+				setError(false);
+			}
 		} else {
 			setError(true);
 			console.log("Please fill in the field");
@@ -65,7 +81,7 @@ export default function Home() {
 	};
 
 	return (
-		<main>
+		<>
 			{/* input */}
 			<section className="container mx-auto flex flex-col items-center gap-4 px-4 my-4">
 				<h1 className="text-3xl">Add a new task</h1>
@@ -122,6 +138,6 @@ export default function Home() {
 					))}
 				</ul>
 			</section>
-		</main>
+		</>
 	);
 }
